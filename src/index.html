@@ -1,0 +1,172 @@
+<!-- Main Function -->
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="chart.js"></script>
+    <style>
+        body {
+            min-width: 310px;
+            max-width: 800px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: Arial;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body onload="javascript:init()">
+    <h2>Shake Machine</h2>
+    <div>
+        <label style="color:red">!!!!!RESET the program and set</label><br>
+        <label>Speed (RPM - MAX:200)</label>
+        <form><input type="text" id="TXA">
+            <input type="button" onclick="sendSpeed();" value="SET">
+        </form>
+        <label>Time (seconds)</label>
+        <form><input type="text" id="TXB">
+            <input type="button" onclick="sendTime();" value="SET">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <button type="button" onclick="sendRun();">RUN</button>
+        <button type="button" onclick="sendStop();">STOP</button>
+        <button type="button" onclick="sendReset();">RESET</button>
+    </div>
+    <hr>
+    <div>
+        <label>Current: </label><label>Speed:</label><label id="speed"></label><label> -
+        </label><label>Time:</label><label id="time"></label>
+        <label> - </label><label id="timer"></label>
+    </div>
+    <hr>
+    <div>
+        <label>STATE: </label><label id="STATE"></label>
+    </div>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+</body>
+
+</html>
+
+
+<!-- JavaScript -->
+<script>
+    var socket;
+    function init() {
+        //WEBSOCKET
+        socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+        //CLIENT RX
+        socket.onmessage = function (event) {
+            var data = JSON.parse(event.data);
+            //update current
+            if (data.id == 1) {
+                document.getElementById('speed').innerHTML = data.speed;
+                document.getElementById('time').innerHTML = data.time;
+                if (data.state == 0) //STOP
+                {
+                    document.getElementById('STATE').style.fontWeight = "bold";
+                    document.getElementById('STATE').style.color = "red";
+                    document.getElementById('STATE').innerHTML = "STOP";
+                }
+                if (data.state == 1) //RUN
+                {
+                    document.getElementById('STATE').style.fontWeight = "bold";
+                    document.getElementById('STATE').style.color = "green";
+                    document.getElementById('STATE').innerHTML = "RUN";
+                }
+                if (data.state == 2) //RESET
+                {
+                    document.getElementById('STATE').style.fontWeight = "bold";
+                    document.getElementById('STATE').style.color = "red";
+                    document.getElementById('STATE').innerHTML = "RESET";
+                }
+                if (data.state == 3) //STOP-DONE
+                {
+                    document.getElementById('STATE').style.fontWeight = "bold";
+                    document.getElementById('STATE').style.color = "green";
+                    document.getElementById('STATE').innerHTML = "STOP-DONE";
+                }
+            }
+            //update speed test
+            if (data.id == 2) {
+                var today = new Date();
+                var t = today.getHours() + ":" + today.getMinutes() + ":" +
+                    today.getSeconds();
+                addData(myChart, t, data.value);//id,x,y
+            }
+            if (data.id == 3) {
+                document.getElementById('timer').innerHTML = data.timer;
+            }
+        }
+    }
+    //ClientTX
+    function sendSpeed() {
+        socket.send("S" + document.getElementById("TXA").value);
+        document.getElementById("TXA").value = ""; //clear data after click
+    }
+    function sendTime() {
+        socket.send("T" + document.getElementById("TXB").value);
+        document.getElementById("TXB").value = ""; //clear data after click
+    }
+    //CHART
+    const labels =
+        [
+            0
+        ];
+    const data =
+    {
+        labels: labels,
+        datasets:
+            [{
+                label: 'Speed Test',
+                backgroundColor: 'green',
+                borderColor: 'green',
+                data: [25],
+            }]
+    };
+    const config =
+    {
+        type: 'line',
+        data,
+        options: {}
+    };
+    var myChart = new Chart
+        (
+            document.getElementById('myChart'),
+            config
+        );
+    //CHART API
+    function addData(chart, label, data) {
+        myChart.data.labels.push(label);
+        myChart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        myChart.update();
+    }
+    function removeData(chart) {
+        myChart.data.labels.pop();
+        myChart.data.datasets.forEach((dataset) => {
+            dataset.data.pop();
+        });
+        myChart.update();
+    }
+    //ACTION
+    function sendRun() {
+        socket.send("I" + "1");
+    }
+    function sendStop() {
+        socket.send("I" + "0");
+    }
+    function sendReset() {
+        socket.send("I" + "2");
+    }
+</script>
