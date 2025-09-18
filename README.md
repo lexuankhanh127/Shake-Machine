@@ -15,4 +15,5 @@
    Follow the workflow shown below to verify everything is working.  
    ![Workflow](images/workflow.jpg)  
 
-   🎥 Watch the demo here: [YouTube Video](https://www.youtube.com/watch?v=nhudY_IctGM)
+   [![Watch the video](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
