@@ -1,13 +1,13 @@
 ## How to Run This Project
 
-### 1. Prepare the Components
+### 1. Hardware
 Refer to the schematic below to assemble the hardware.  
 
 ![Schematic](images/schematic.jpg)
 
 ---
 
-### 2. Upload the Code
+### 2. Software
 This project uses [PlatformIO](https://platformio.org/).  
 
 - Open the project in PlatformIO.  
@@ -18,7 +18,7 @@ This project uses [PlatformIO](https://platformio.org/).
 
 ---
 
-### 3. Test the Project
+### 3. Testing
 Follow the workflow shown below to verify everything is working.  
 
 ![Workflow](images/workflow.jpg)
