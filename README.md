@@ -2,17 +2,17 @@
 
 1. **Prepare the Components**  
    Refer to the schematic below to assemble the hardware.  
-   ![Schematic](schematic.png)
+   ![Schematic](images/schematic.jpg)
 
 2. **Upload the Code**  
    This project uses [PlatformIO](https://platformio.org/).  
    - Open the project in PlatformIO.  
    - Connect your board via USB.  
    - Build and upload the firmware.  
-   ![Web Server](webserver.png)
+   ![Web Server](images/web.png)
 
 3. **Test the Project**  
    Follow the workflow shown below to verify everything is working.  
-   ![Workflow](workflow.png)  
+   ![Workflow](images/workflow.jpg)  
 
    🎥 Watch the demo here: [YouTube Video](https://youtube.com/your-link)
